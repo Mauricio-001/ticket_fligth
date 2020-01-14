@@ -1,8 +1,15 @@
+import 'dart:convert';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:scan_code/api/active_users_api.dart';
 import 'package:scan_code/global.dart';
+import 'package:scan_code/models/users.dart';
 import 'package:scan_code/ui/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
+import 'dart:async';
 
+import 'details.dart';
+//import 'dart:typed_data';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,7 +17,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var activeUsers = new List<UsersModel>();
+  Timer timer;
   int _active = 0;
+  String barcode = '';
+
+  Future _getFromApi() async {
+    UsersList.getActiveUsers().then((response) {
+      setState(() {
+        Iterable list = json.decode(response.body);
+        activeUsers = list.map((model) => UsersModel.fromJson(model)).toList();
+        
+
+      });
+    });
+  }
+
+initState() {
+    super.initState();
+    _getFromApi();
+    timer = Timer.periodic(Duration(seconds: 15), (Timer t) => _getFromApi());
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,21 +55,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             title: Text("Home"),
           ),
+           
           BottomNavyBarItem(
             icon: Icon(
-              Icons.flight_takeoff,
+              Icons.settings,
             ),
-            title: Text("Passagens"),
-          ),
-          BottomNavyBarItem(
-            icon: Icon(
-              Icons.person,
-            ),
-            title: Text("Perfil"),
+            title: Text("Settings"),
           ),
         ],
       ),
-      backgroundColor: Color(0xffd8f5f6),
+      backgroundColor: Color(0xfff4f6ff),
       body: SafeArea(
         child: SingleChildScrollView(
             child: Column(
@@ -56,28 +80,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        "Próximas Viagens",
+                        "Check identification",
                         style: Theme.of(context)
                             .textTheme
                             .title
                             .apply(fontWeightDelta: 2),
                       ),
-                      FlatButton.icon(
-                        label: Text("All",
-                            style: TextStyle(
-                                color: Theme.of(context).accentColor)),
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.chevron_right,
-                          color: Theme.of(context).accentColor,
-                        ),
-                      )
+                       
                     ],
                   ),
-                  SizedBox(height: 9.0),
-                  GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, 'detalhes'),
-                                      child: Container(
+                  SizedBox(height: 18.0),
+                  
+                                       Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 21.0, vertical: 31.0),
                       decoration: BoxDecoration(
@@ -91,79 +105,70 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
+                      
                       child: Row(
+                        
                         children: <Widget>[
-                          FlightDetailColumn(
-                              textColor: Theme.of(context).accentColor),
+                         
                           Expanded(
                             child: Column(
                               children: <Widget>[
-                                Icon(Icons.airplanemode_active,
-                                    color: Theme.of(context).accentColor),
-                                Text(
-                                  "7h55min",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle
-                                      .apply(
-                                          color: Theme.of(context).accentColor),
-                                )
+                                FlatButton.icon(
+          color: Colors.white,
+          icon: Icon(Icons.scanner), //`Icon` to display
+          label: Text('Scan Visitor\'s Identification',
+                  style: Theme.of(context).textTheme .subtitle.apply(color: Theme.of(context).accentColor)), //`Text` to display
+          onPressed: () {
+            _scanFromCamera();
+          },),
+                                
                               ],
+                              
                             ),
+                            
                           ),
-                          FlightDetailColumn(
-                              textColor: Theme.of(context).accentColor),
+                           
                         ],
                       ),
                     ),
-                  ),
+                  
                   SizedBox(height: 15.0),
-                  Text(
-                    "Locais Desejados",
-                    style: Theme.of(context)
-                        .textTheme
-                        .title
-                        .apply(fontWeightDelta: 2),
-                  ),
+                   
                   SizedBox(height: 9.0),
-                  Container(
-                    height: MediaQuery.of(context).size.height / 4,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: popularList.length,
-                      itemBuilder: (ctx, i) {
-                        return GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, 'details'),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 3,
-                            margin: EdgeInsets.symmetric(horizontal: 15.0),
-                            padding: EdgeInsets.all(15.0),
-                            alignment: Alignment.bottomLeft,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage("${popularList[i]['img']}"),
-                              ),
-                            ),
-                            child: Text(
-                              "${popularList[i]['title']}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline
-                                  .apply(color: Colors.white),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
+                   ],
               ),
             ),
           ],
         )),
       ),
     );
+  }
+  Future _scanFromCamera() async {
+    print('testing');
+    String barcode = await scanner.scan();
+    setState(() => this.barcode = barcode);
+
+    for (int i = 0; i < activeUsers.length; i++)
+        {
+          if(activeUsers[i].id.toString() == barcode)
+          {
+            print("name***************************");
+            print(activeUsers[i].name);
+            print("***************************endName");
+            
+Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (ctx) => DetailsScreen(id: i, user: activeUsers),
+                              ),
+                            );
+          }
+        }
+         
+  
+
+
+
+    print(barcode);
   }
 }

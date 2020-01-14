@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PassengerContainer extends StatelessWidget {
-  final String imageUrl, fullName, age, gender, seat;
+  final String imageUrl, fullName, id, email, phone, username;
 
   const PassengerContainer(
-      {Key key, this.imageUrl, this.fullName, this.age, this.gender, this.seat})
+      {Key key, this.imageUrl, this.fullName, this.id, this.email, this.phone, this.username})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,19 @@ class PassengerContainer extends StatelessWidget {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
               ),
               Text(
-                "$age\Y, $gender",
+                "Username: $username",
+                style: TextStyle(fontSize: 13.0),
+              ),
+              Text(
+                "Identification number: $id",
+                style: TextStyle(fontSize: 13.0),
+              ),
+              Text(
+                "Email: $email",
+                style: TextStyle(fontSize: 13.0),
+              ),
+              Text(
+                "Phone number: $phone",
                 style: TextStyle(fontSize: 13.0),
               ),
             ],
@@ -35,18 +47,7 @@ class PassengerContainer extends StatelessWidget {
         Spacer(
           flex: 3,
         ),
-        Container(
-          padding: EdgeInsets.all(3.0),
-          decoration: BoxDecoration(
-              color: Color(0xfff1f2f9),
-              borderRadius: BorderRadius.circular(3.0)),
-          child: Row(
-            children: <Widget>[
-              Icon(Icons.airline_seat_recline_normal),
-              Text("$seat"),
-            ],
-          ),
-        )
+         
       ],
     );
   }

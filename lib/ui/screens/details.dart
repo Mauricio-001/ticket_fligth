@@ -3,14 +3,17 @@ import 'package:scan_code/global.dart';
 import 'package:scan_code/ui/widgets/widgets.dart';
 
 class DetailsScreen extends StatelessWidget {
+  final int id;
+  final user;
+  const DetailsScreen({Key key, @required this.id, this.user}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: blueColor,
+        backgroundColor: Color.fromRGBO(49, 57, 69, 0.9),
         automaticallyImplyLeading: true,
         centerTitle: true,
-        title: Text("CARTÃO DE EMBARQUE"),
+        title: Text("VISITOR INFORMATION"),
         elevation: 0.0,
         actions: <Widget>[
           IconButton(
@@ -27,7 +30,7 @@ class DetailsScreen extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    color: blueColor,
+                    color: Color.fromRGBO(49, 57, 69, 0.9),
                   ),
                 ),
                 Flexible(
@@ -63,77 +66,12 @@ class DetailsScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [blueColor, Color(0xfff7f9ff)],
+                        colors: [Color.fromRGBO(49, 57, 69, 0.9), Color(0xfff7f9ff)],
                       ),
                     ),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            FlightDetailColumn(),
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
-                                  Icon(Icons.airplanemode_active,
-                                      color: Colors.white),
-                                  Text(
-                                    "1h31min",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle
-                                        .apply(color: Colors.white),
-                                  )
-                                ],
-                              ),
-                            ),
-                            FlightDetailColumn(),
-                          ],
-                        ),
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 15.0),
-                          height: 100,
-                          child: Stack(
-                            children: <Widget>[
-                              Positioned.fill(
-                                child: Image.network(cloudImg),
-                              ),
-                              Positioned.fill(
-                                child: Image.network(airplaneImg),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                     
                   ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: FlightInfoRow(
-                          title: "Flight",
-                          content: "LF713",
-                        ),
-                      ),
-                      Expanded(
-                        child: FlightInfoRow(
-                          title: "Class",
-                          content: "First",
-                        ),
-                      ),
-                      Expanded(
-                        child: FlightInfoRow(
-                          title: "Boarding",
-                          content: "09:11",
-                        ),
-                      ),
-                      Expanded(
-                        child: FlightInfoRow(
-                          title: "Terminal",
-                          content: "12A",
-                        ),
-                      ),
-                    ],
-                  ),
+                   
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 15.0),
                     padding: const EdgeInsets.all(15.0),
@@ -141,21 +79,15 @@ class DetailsScreen extends StatelessWidget {
                     child: Column(
                       children: <Widget>[
                         PassengerContainer(
-                          age: "21",
-                          imageUrl:
-                              "https://lh3.googleusercontent.com/-GELaWFBRPnQ/We3KfYBqTuI/AAAAAAAAAqE/wQDXxVI6nFoox1gOKfvIjmH1_5LKUhKzACEwYBhgL/w140-h140-p/20376010_1795833643775120_614181264397520443_n%2B%25281%2529.jpg",
-                          fullName: "Amazigh Halzoun",
-                          gender: "MALE",
-                          seat: "18A",
+                          id: "${user[id].id}",
+                          imageUrl: userimageUrl,
+                          fullName: "${user[id].name}",
+                          email: "${user[id].email}",
+                          phone: "${user[id].phone}",
+                          username: "${user[id].userName}",
                         ),
                         Divider(),
-                        PassengerContainer(
-                          age: "21",
-                          imageUrl: userimageUrl,
-                          fullName: "CYBDOM TECH",
-                          gender: "MALE",
-                          seat: "17A",
-                        ),
+                         
                       ],
                     ),
                   ),

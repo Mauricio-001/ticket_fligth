@@ -13,7 +13,7 @@ class FlightDetailColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          "10 FEV, 14:50",
+          "14 jan, 15:24",
           style: Theme.of(context)
               .textTheme
               .subhead
@@ -27,7 +27,7 @@ class FlightDetailColumn extends StatelessWidget {
               .apply(color: textColor ?? Colors.white, fontWeightDelta: 2),
         ),
         Text(
-          "NOV YOK",
+          "Las Vegas",
           style: Theme.of(context)
               .textTheme
               .subhead
