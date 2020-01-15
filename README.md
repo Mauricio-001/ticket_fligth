@@ -1,4 +1,4 @@
-# scan_code
+# ticket_fligth
 
 A new Flutter project.
 
